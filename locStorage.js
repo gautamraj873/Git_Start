@@ -25,4 +25,11 @@ function addItem(e){
 
     let obj_deserialized = JSON.parse(localStorage.getItem('userDetails'));
     console.log(obj_deserialized);
+    showUserOnScreen(obj_deserialized);
+
+    function showUserOnScreen(obj_deserialized){
+    const parentElem = document.getElementById('listOfItems');
+    parentElem.innerHTML = parentElem.innerHTML + `<li>${obj_deserialized.username} - ${obj_deserialized.emailId} - ${obj_deserialized.phoneNo}</li>`
+    }
+    
 };
