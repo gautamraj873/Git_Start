@@ -1,6 +1,8 @@
 let form = document.getElementById('store');
+let parentElem = document.getElementById('listOfItems');
 
 form.addEventListener('submit', addItem);
+parentElem.addEventListener('click', deleteItem);
 
 function addItem(e){
     e.preventDefault();
@@ -9,27 +11,47 @@ function addItem(e){
     let emailValue = document.getElementById('emailId').value;
     let phoneValue = document.getElementById('phoneNo').value;
 
-    // localStorage.setItem('name', nameValue);
-    // localStorage.setItem('email', emailValue);
-    // localStorage.setItem('phoneNo', phoneValue);
-
     const obj = {
         username : nameValue,
         emailId : emailValue,
         phoneNo : phoneValue
     };
 
-    let obj_serialized = JSON.stringify(obj);
-
-    localStorage.setItem('userDetails', obj_serialized);
-
-    let obj_deserialized = JSON.parse(localStorage.getItem('userDetails'));
-    console.log(obj_deserialized);
-    showUserOnScreen(obj_deserialized);
-
-    function showUserOnScreen(obj_deserialized){
-    const parentElem = document.getElementById('listOfItems');
-    parentElem.innerHTML = parentElem.innerHTML + `<li>${obj_deserialized.username} - ${obj_deserialized.emailId} - ${obj_deserialized.phoneNo}</li>`
+    let itemsArray = [];
+    if(localStorage.getItem('items')){
+        itemsArray = JSON.parse(localStorage.getItem('items'));
     }
-    
-};
+    itemsArray.push(obj);
+    localStorage.setItem('items', JSON.stringify(itemsArray));
+
+    showUserOnScreen();
+
+    form.reset();
+}
+
+function showUserOnScreen(){
+    parentElem.innerHTML = "";
+    let itemsArray = JSON.parse(localStorage.getItem('items'));
+
+    if(itemsArray){
+        for(let i=0; i<itemsArray.length; i++){
+            let li = document.createElement('li');
+            li.innerHTML = itemsArray[i].username + " - " + itemsArray[i].emailId + " - " + itemsArray[i].phoneNo + " ";
+            let deleteButton = document.createElement('button');
+            deleteButton.innerHTML = "Delete";
+            deleteButton.setAttribute('data-index', i);
+            li.appendChild(deleteButton);
+            parentElem.appendChild(li);
+        }
+    }
+}
+
+function deleteItem(e){
+    if(e.target.tagName === "BUTTON"){
+        let index = e.target.getAttribute('data-index');
+        let itemsArray = JSON.parse(localStorage.getItem('items'));
+        itemsArray.splice(index, 1);
+        localStorage.setItem('items', JSON.stringify(itemsArray));
+        showUserOnScreen();
+    }
+}
