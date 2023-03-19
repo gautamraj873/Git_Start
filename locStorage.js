@@ -2,7 +2,7 @@ let form = document.getElementById('store');
 let parentElem = document.getElementById('listOfItems');
 
 form.addEventListener('submit', addItem);
-parentElem.addEventListener('click', deleteItem);
+parentElem.addEventListener('click', deleteOrUpdateItem);
 
 function addItem(e){
     e.preventDefault();
@@ -40,18 +40,31 @@ function showUserOnScreen(){
             let deleteButton = document.createElement('button');
             deleteButton.innerHTML = "Delete";
             deleteButton.setAttribute('data-index', i);
+            let editButton = document.createElement('button');
+            editButton.innerHTML = "Edit";
+            editButton.setAttribute('data-index', i);
             li.appendChild(deleteButton);
+            li.appendChild(editButton);
             parentElem.appendChild(li);
         }
     }
 }
 
-function deleteItem(e){
+function deleteOrUpdateItem(e){
     if(e.target.tagName === "BUTTON"){
         let index = e.target.getAttribute('data-index');
         let itemsArray = JSON.parse(localStorage.getItem('items'));
-        itemsArray.splice(index, 1);
-        localStorage.setItem('items', JSON.stringify(itemsArray));
+        if(e.target.innerHTML === "Delete") {
+            itemsArray.splice(index, 1);
+            localStorage.setItem('items', JSON.stringify(itemsArray));
+        } else if(e.target.innerHTML === "Edit") {
+            let user = itemsArray[index];
+            document.getElementById('username').value = user.username;
+            document.getElementById('emailId').value = user.emailId;
+            document.getElementById('phoneNo').value = user.phoneNo;
+            itemsArray.splice(index, 1);
+            localStorage.setItem('items', JSON.stringify(itemsArray));
+        }
         showUserOnScreen();
     }
 }
