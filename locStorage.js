@@ -21,7 +21,7 @@ function addItem(e){
         phoneNo : phoneValue
     };
 
-    axios.post('https://crudcrud.com/api/63b16f4112514649adb17463679e108b/users', obj)
+    axios.post('https://crudcrud.com/api/9be68bc6a2604df0a557159868b775ca/users', obj)
     .then(response => {
         showUserOnScreen();
         form.reset();
@@ -33,7 +33,7 @@ function addItem(e){
 
 function showUserOnScreen(){
     parentElem.innerHTML = "";
-    axios.get('https://crudcrud.com/api/63b16f4112514649adb17463679e108b/users')
+    axios.get('https://crudcrud.com/api/9be68bc6a2604df0a557159868b775ca/users')
     .then(response => {
         let itemsArray = response.data;
         if(itemsArray){
@@ -57,26 +57,29 @@ function showUserOnScreen(){
     });
 }
 
-function deleteOrUpdateItem(e){
-    if(e.target.tagName === "BUTTON"){
-        let index = e.target.getAttribute('data-index');
-        let itemsArray = JSON.parse(localStorage.getItem('items'));
-        if(e.target.innerHTML === "Delete") {
-            axios.delete('https://crudcrud.com/api/63b16f4112514649adb17463679e108b/users/' + index)
-            .then(response => {
-                showUserOnScreen();
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        } else if(e.target.innerHTML === "Edit") {
-            let user = itemsArray[index];
-            document.getElementById('username').value = user.username;
-            document.getElementById('emailId').value = user.emailId;
-            document.getElementById('phoneNo').value = user.phoneNo;
-            itemsArray.splice(index, 1);
-            localStorage.setItem('items', JSON.stringify(itemsArray));
-        }
-        showUserOnScreen();
+function deleteOrUpdateItem(e) {
+  if (e.target.tagName === "BUTTON") {
+    let index = e.target.getAttribute('data-index');
+
+    if (e.target.innerHTML === "Delete") {
+      axios.delete('https://crudcrud.com/api/9be68bc6a2604df0a557159868b775ca/users/' + index)
+        .then(response => {
+          showUserOnScreen();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else if (e.target.innerHTML === "Edit") {
+      axios.get('https://crudcrud.com/api/9be68bc6a2604df0a557159868b775ca/users/' + index)
+        .then(response => {
+          let user = response.data;
+          document.getElementById('username').value = user.username;
+          document.getElementById('emailId').value = user.emailId;
+          document.getElementById('phoneNo').value = user.phoneNo;
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
+  }
 }
